@@ -4,13 +4,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-const { scanPage, enhanceResults } = require('../scanner/axeScanner');
-const { generatePDFReport } = require('../utils/pdfGenerator');
-const SearchEngine = require('../services/searchEngine');
+const { scanPage, enhanceResults } = require('./scanner/axeScanner');
+const { generatePDFReport } = require('./utils/pdfGenerator');
+const SearchEngine = require('./services/searchEngine');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
-const initializeDatabase = require('../db/schema');
-const searchRoutes = require('../routes/searchRoutes');
+const initializeDatabase = require('./db/schema');
+const searchRoutes = require('./routes/searchRoutes');
 const { format } = require('date-fns');
 
 const PORT = process.env.PORT || 5000;
@@ -244,7 +244,11 @@ async function startServer() {
     console.log('Reports directory ready');
     
     // 4. Start server
-    app.listen(PORT, () => {
+    app.listen(PORT, (err) => {
+      if (err) {
+        console.error(`Failed to start server on port ${PORT}:`, err);
+        process.exit(1);
+      }
       console.log(`🚀 Server running on port ${PORT}`);
     });
     
